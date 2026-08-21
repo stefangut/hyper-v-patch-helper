@@ -1,0 +1,436 @@
+PS C:\Users\stefang> help Get-SCVMHost
+
+NAME
+    Get-SCVMHost
+
+SYNOPSIS
+    Gets virtual machine host objects from the Virtual Machine Manager database.
+
+
+SYNTAX
+    Get-SCVMHost [[-ComputerName] <String>] [-ID <Guid>] [-VMMServer <ServerConnection>] [<CommonParameters>]
+
+    Get-SCVMHost [[-ComputerName] <String>] -VMHostCluster <HostCluster> [<CommonParameters>]
+
+    Get-SCVMHost [[-ComputerName] <String>] -VMHostGroup <HostGroup> [<CommonParameters>]
+
+
+DESCRIPTION
+    The Get-SCVMHost cmdlet gets one or more virtual machine host objects from the Virtual Machine Manager (VMM) database. Virtual machine hosts are physical computers that are managed by
+    VMM on which you can deploy virtual machines.
+
+    VMM supports the following types of hosts:
+
+    - Hyper-V hosts
+
+    - VMware ESX hosts
+
+    - Citrix XenServer hosts
+
+
+    For more information about virtual machine hosts in Virtual Machine Manager, type [CODE_Snippit]Get-Help Add-VMHost -Detailed[CODE_Snippit].
+
+
+
+RELATED LINKS
+    Add-SCVMHost
+    Disable-SCVMHost
+    Enable-SCVMHost
+    Move-SCVMHost
+    Read-SCVMHost
+    Register-SCVMHost
+    Remove-SCVMHost
+    Repair-SCVMHost
+    Restart-SCVMHost
+    Set-SCVMHost
+    Start-SCVMHost
+    Stop-SCVMHost
+
+REMARKS
+    To see the examples, type: "get-help Get-SCVMHost -examples".
+    For more information, type: "get-help Get-SCVMHost -detailed".
+    For technical information, type: "get-help Get-SCVMHost -full".
+    For online help, type: "get-help Get-SCVMHost -online"
+
+
+
+PS C:\Users\stefang> help Get-SCVirtualMachine
+
+NAME
+    Get-SCVirtualMachine
+
+SYNOPSIS
+    Gets virtual machine objects.
+
+
+SYNTAX
+    Get-SCVirtualMachine [[-Name] <String>] [-All] [-OnBehalfOfUser <String>] [-OnBehalfOfUserRole <UserRole>] [-VMMServer <ServerConnection>] [<CommonParameters>]
+
+    Get-SCVirtualMachine [[-Name] <String>] -Cloud <Cloud> [-OnBehalfOfUser <String>] [-OnBehalfOfUserRole <UserRole>] [-VMMServer <ServerConnection>] [<CommonParameters>]
+
+    Get-SCVirtualMachine [[-Name] <String>] -ComputerTier <ComputerTier> [-OnBehalfOfUser <String>] [-OnBehalfOfUserRole <UserRole>] [-VMMServer <ServerConnection>] [<CommonParameters>]
+
+    Get-SCVirtualMachine [[-Name] <String>] [-ID <Guid>] [-OnBehalfOfUser <String>] [-OnBehalfOfUserRole <UserRole>] [-VMMServer <ServerConnection>] [<CommonParameters>]
+
+    Get-SCVirtualMachine [[-Name] <String>] [-OnBehalfOfUser <String>] [-OnBehalfOfUserRole <UserRole>] -Service <Service> [-VMMServer <ServerConnection>] [<CommonParameters>]
+
+    Get-SCVirtualMachine [[-Name] <String>] [-OnBehalfOfUser <String>] [-OnBehalfOfUserRole <UserRole>] -StorageQoSPolicy <StorageQoSPolicy> [-VMMServer <ServerConnection>]
+    [<CommonParameters>]
+
+    Get-SCVirtualMachine [[-Name] <String>] [-OnBehalfOfUser <String>] [-OnBehalfOfUserRole <UserRole>] -VMHost <Host> [-VMMServer <ServerConnection>] [<CommonParameters>]
+
+
+DESCRIPTION
+    The Get-SCVirtualMachine cmdlet gets one or more virtual machine objects from the Virtual Machine Manager (VMM) database. This cmdlet gets virtual machines that are deployed on a
+    virtual machine host or stored in the VMM library.
+
+
+RELATED LINKS
+    Add-SCVMHost
+    Get-SCUserRole
+    Get-SCVMMServer
+    Move-SCVirtualMachine
+    New-SCVirtualMachine
+    Read-SCVirtualMachine
+    Remove-SCVirtualMachine
+    Repair-SCVirtualMachine
+    Resume-SCVirtualMachine
+    Save-SCVirtualMachine
+    Set-SCVirtualMachine
+    Start-SCVirtualMachine
+    Stop-SCVirtualMachine
+    Suspend-SCVirtualMachine
+
+REMARKS
+    To see the examples, type: "get-help Get-SCVirtualMachine -examples".
+    For more information, type: "get-help Get-SCVirtualMachine -detailed".
+    For technical information, type: "get-help Get-SCVirtualMachine -full".
+    For online help, type: "get-help Get-SCVirtualMachine -online"
+
+
+
+PS C:\Users\stefang> help Move-SCVirtualMachine
+
+NAME
+    Move-SCVirtualMachine
+
+SYNOPSIS
+    Moves a virtual machine stored in the VMM library or deployed on a host to a new location on a host.
+
+
+SYNTAX
+    Move-SCVirtualMachine [-VM] <VM> [-BlockLiveMigrationIfHostBusy] [-DiscardSavedState] [-HighlyAvailable <Boolean>] [-JobGroup <Guid>] [-JobVariable <String>] [-OnBehalfOfUser <String>]
+    [-OnBehalfOfUserRole <UserRole>] [-PROTipID <Guid>] [-Path <String>] [-ReplicationGroup <ReplicationGroup>] [-RunAsynchronously] [-StartVMOnTarget] [-UseCluster]
+    [-UseDiffDiskOptimization] [-UseLAN] [-VMHost <Host>] [<CommonParameters>]
+
+
+DESCRIPTION
+    The Move-SCVirtualMachine cmdlet moves a virtual machine stored in the Virtual Machine Manager (VMM) library or deployed on a host to a new location on a host.
+
+    In System Center 2016, you can take advantage of new migration capabilities included in Windows Server 2016. These capabilities include live migration of virtual machines between two
+    stand-alone computers and live migration between stand-alone computers and a cluster node. Additionally, multiple concurrent live migrations are supported. For more information about
+    how to migrate virtual machines in System Center 2016, see Migrating Virtual Machines and Storage in VMMhttps://technet.microsoft.com/en-us/library/mt710321(v=sc.16).aspx
+    (https://technet.microsoft.com/en-us/library/mt710321(v=sc.16).aspx) in the TechNet Library.
+
+    If you move a virtual machine deployed on a host running Windows Server 2008 R2 to a host running Windows Server 2016, you cannot move the virtual machine back to a host running
+    Windows Server 2008 R2.
+
+    VMM includes storage migration features that let you move one or more virtual hard disks of a running virtual machine to a different location. You can use the current cmdlet and the
+    Move-SCVirtualHardDisk cmdlet to move Windows-based virtual hard disk (.vhd) files and VMware-based virtual hard disk (.vmdk) files to a location on a different host. You can also use
+    the Move-SCVirtualHardDisk cmdlet to move a .vhd file or a .vmdk file from one location to another on the same host.
+
+    To move a virtual machine from a host and store it in the library, you must use the Save-SCVirtualMachine cmdlet.
+
+    VMM can use any of the following transfer methods, listed in the order in which VMM tries to use them:
+
+    - Hyper-V live migration. If a virtual machine is running and is deployed on a Hyper-V host that is a node of a Windows Server 2008 R2 or Windows Server 2016 host cluster, by default,
+    VMM uses Hyper-V live migration to move the virtual machine to another node in the cluster without any disruption of service. Moving a running virtual machine does not disconnect it
+    from the network. The virtual machine retains its high availability attribute. You do not have to specify a path. You can start live migration of multiple virtual machines at the same
+    time.
+
+    - Windows Server 2008 Cluster Migration. System Center 2016 continues to support Windows 2008 Cluster Migration, which is sometimes called Quick Migration. Cluster Migration moves a
+    running virtual machine on a Hyper-V node of a host cluster. It also lets you move a virtual machine that is in a stopped or saved state, and that is deployed to another node in the
+    cluster. You can use Cluster Migration to move a virtual machine in a stopped or saved state if the virtual machine is deployed on either of the following nodes:
+
+
+    ----A node in a Windows Server 2008 cluster
+
+    ----A node in a Windows Server 2008 R2 cluster
+
+
+    You do not have to specify a path. Windows Server 2008 Cluster Migration puts the virtual machine in a saved state during migration. This operation causes a temporary loss of service
+    to any users of that virtual machine. - VMware live migration. If a virtual machine deployed on a VMware ESX host uses shared storage, VMM can use the VMware live migration feature to
+    move the virtual machine to a new host. This feature is called VMware VMotion. You do not have to specify a path. The current cmdlet can use VMware VMotion to move a virtual machine
+    from one ESX host to another only if both ESX hosts are in the same Datacenter container on the vCenter Server.
+
+    - Citrix XenServer XenMotion. If a virtual machine deployed on a Citrix XenServer host uses shared storage and is part of the same Resource Pool, VMM can use the XenServer live
+    migration feature to move the virtual machine to a different XenServer host. The live migration feature is called Citrix XenMotion.
+
+    - SAN migration (Fibre Channel, iSCSI, or NPIV). If the virtual machine is on a host that is connected to a SAN and the virtual machine is on a SAN LUN, VMM can move that virtual
+    machine to another host if that host has access to the same SAN. In a SAN transfer, the target LUNs are redirected from the source host to the destination host. This migration does not
+    move files. A SAN transfer is much faster than moving virtual machine files from one host to another over a local area network (LAN). VMM supports SAN migration of virtual machines
+    into and out of a cluster. You must specify a path. VMM can use an NPIV SAN transfer if a host bus adapter (HBA) with NPIV support is available.
+    - Network Migration. If no faster method is available, VMM uses a network transfer to move the virtual machine files from one host to another over the LAN that connects the two hosts.
+    You can decide to use this transfer type even if the SAN transfer type is available. You must specify a path.
+
+
+    When more than one transfer type is available, this cmdlet automatically uses the fastest available transfer type to move a virtual machine. If a method is not appropriate or available
+    for the virtual machine that you want to move, VMM tries to use the next method in the list. If you want to force the use of a network transfer, specify the UseLAN parameter.
+
+
+
+RELATED LINKS
+    Add-SCVMHost
+    Get-SCUserRole
+    Get-SCVirtualMachine
+    Get-SCVMHost
+    Move-SCVirtualHardDisk
+    New-SCVirtualMachine
+    Read-SCVirtualMachine
+    Register-SCVirtualMachine
+    Repair-SCVirtualMachine
+    Reset-SCVirtualMachine
+    Resume-SCVirtualMachine
+    Save-SCVirtualMachine
+    Set-SCVirtualMachine
+    Start-SCVirtualMachine
+    Suspend-SCVirtualMachine
+    Stop-SCVirtualMachine
+
+REMARKS
+    To see the examples, type: "get-help Move-SCVirtualMachine -examples".
+    For more information, type: "get-help Move-SCVirtualMachine -detailed".
+    For technical information, type: "get-help Move-SCVirtualMachine -full".
+    For online help, type: "get-help Move-SCVirtualMachine -online"
+
+
+
+PS C:\Users\stefang> help Get-SCVMHostCluster -Examples
+
+NAME
+    Get-SCVMHostCluster
+
+SYNOPSIS
+    Gets a host cluster object.
+
+
+    Example 1: Get all host clusters managed by a VMM server
+
+    PS C:\>Get-SCVMHostCluster -VMMServer "VMMServer01.Contoso.com"
+
+    This command gets all host cluster objects on VMMServer01 and displays information about each host cluster to the user.
+    Example 2: Get all host clusters managed by a VMM server and display the host cluster name and virtualization platform for each cluster
+
+    PS C:\>Get-SCVMHostCluster -VMMServer "VMMServer01.Contoso.com" | Select-Object -Property Name, VirtualizationPlatform
+
+    This command gets all host cluster objects on VMMServer01 and passes each object to the Select-Object cmdlet, which displays the name and virtualization platform for each host cluster.
+    Example 3: Get a host cluster by name
+
+    PS C:\>Get-SCVMHostCluster -Name "VMHostCluster03.Contoso.com"
+
+    This command gets the host cluster object named VMHostCluster03 and displays information about the cluster.
+    Example 4: Display the object type, methods, and properties for a host cluster managed by VMM
+
+    PS C:\>Get-SCVMHostCluster -VMMServer "VMMServer01.Contoso.com" | Get-Member
+
+    This command gets the host cluster objects on VMMServer01 and then passes a host cluster object to the Get-Member cmdlet, which displays the .NET type for a host cluster object and the
+    list of events, methods, and properties associated with a host cluster object.
+
+
+
+
+PS C:\Users\stefang> help Get-SCVMHost -Examples
+
+NAME
+    Get-SCVMHost
+
+SYNOPSIS
+    Gets virtual machine host objects from the Virtual Machine Manager database.
+
+
+    Example 1: Get all hosts managed by the specified VMM server
+
+    PS C:\>Get-SCVMHost -VMMServer "VMMServer01.Contoso.com"
+
+    This command gets all host objects for all managed by VMMServer01 and displays the host properties to the user.
+    Example 2: Get a host by name
+
+    PS C:\>Get-SCVMHost -ComputerName "VMHost01.Contoso.com"
+
+    This command gets the host object named VMHost01 in the Contoso.com domain and displays the host properties to the user.
+    Example 3: Get all hosts in a specific host group and display information about them to the user
+
+    PS C:\>$HostGroup = Get-SCVMHostGroup -Name "HostGroup01" -VMMServer "VMMServer01.Contoso.com"
+    PS C:\> $HostsInHG = Get-SCVMHost -VMHostGroup $HostGroup
+    PS C:\> $HostsInHG | Format-Table -Property Name, VMs
+
+    The first command gets the host group object named HostGroup01 from VMMServer01 and stores the object in the $HostGroup variable.
+
+    The second command gets all host objects in the host group stored in $HostGroup and stores the objects in the $HostsInHG variable.
+
+    The last command uses the pipeline operator to pass all host objects stored in $HostsInHG to the Format-Table cmdlet, which displays the name of each host and the virtual machines
+    deployed on that host in a table.
+    Example 4: Get all hosts in a specific host cluster and display information about them to the user
+
+    PS C:\>$Cluster = Get-SCVMHostCluster -Name "Cluster01.Contoso.com" -VMMServer "VMMServer01.Contoso.com"
+    PS C:\> $HostsInCluster = Get-SCVMHost -VMHostCluster $Cluster
+    PS C:\> $HostsInCluster | Format-Table -Property Name, VirtualizationPlatform
+
+    The first command gets the host cluster object named Cluster01 from VMMServer01 and stores the object in the $Cluster variable.
+
+    The second command gets all host objects in Cluster01 and stores the objects in the $HostsInCluster variable.
+
+    The last command passes all host objects stored in $HostsInCluster to the Format-Table cmdlet, which displays the name and virtualization platform of each host in Cluster01.
+    Example 5: Get a specific host located on a perimeter network by its IP address
+
+    PS C:\>$VMHost = Get-VMHost -ComputerName 10.199.53.5 -VMMServer "VMMServer01.Contoso.com"
+    PS C:\> $VMHost | Select-Object -Property ComputerName, OperatingSystem
+
+    The first command gets the host object located on a perimeter network whose IP address is 10.199.53.5 from VMMServer01 and stores the object in the $VMHost variable.
+
+    The second command uses the pipeline operator to pass the host object in $VMHost to the Select-Object cmdlet, which displays the computer name and operating system for the host.
+
+
+
+
+PS C:\Users\stefang> help Get-SCVirtualMachine -Examples
+
+NAME
+    Get-SCVirtualMachine
+
+SYNOPSIS
+    Gets virtual machine objects.
+
+
+    Example 1: Get all virtual machines and display information about each one
+
+    PS C:\>Get-SCVirtualMachine -VMMServer "VMMServer01.Contoso.com"
+
+    This command gets all virtual machine objects on VMMServer01, and displays information about these virtual machine objects.
+    Example 2: Get all virtual machines and display information about specific properties
+
+    PS C:\>Get-SCVirtualMachine -VMMServer "VMMServer01.Contoso.com" | Format-List -Property Name, Owner, Description, HostName, OperatingSystem, CPUCount, Memory
+
+    This command gets all virtual machine objects on VMMServer01, and displays the values of the specified properties.
+    Example 3: Get a virtual machine by name that is stored on a specified library server
+
+    PS C:\>Get-SCVMMServer -ComputerName "VMMServer01.Contoso.com"
+    PS C:\> Get-SCVirtualMachine | Where-Object { $_.Name -Eq "VM02" -And $_.LibraryServer -Eq "LibraryServer01" } | Select-Object Name,LibraryServer,Status
+
+    The first command connects to VMMServer01.
+
+    The second command gets the virtual machine object named VM02 stored on LibraryServer01, and then displays the virtual machine name, the name of the library server, and the status of
+    the virtual machine.
+    Example 4: Get all virtual machines on the specified host
+
+    PS C:\>Get-SCVMMServer -ComputerName "VMMServer01.Contoso.com"
+    PS C:\> Get-SCVirtualMachine -VMHost "VMHost01.Contoso.com"
+
+    The first command connects to VMMServer01.
+
+    The second command gets all virtual machine objects deployed on VMHost01, and displays information about these virtual machines.
+
+
+
+
+PS C:\Users\stefang> help Move-SCVirtualMachine -Examples
+
+NAME
+    Move-SCVirtualMachine
+
+SYNOPSIS
+    Moves a virtual machine stored in the VMM library or deployed on a host to a new location on a host.
+
+
+    Example 1: Move a virtual machine from the library to a host
+
+    PS C:\>$VM = Get-SCVirtualMachine | Where-Object { $_.Name -Eq "VM01" -And $_.LibraryServer -Eq "LibServer01.Contoso.com" }
+    PS C:\> $VMHost = Get-SCVMHost -ComputerName "VMHost01.Contoso.com"
+    PS C:\> Move-SCVirtualMachine -VMHost $VMHost -VM $VM -Path "D:\VirtualMachinePath"
+
+    The first command command gets the virtual machine object named VM01, and then stores that object in the $VM variable. In this example, the virtual machine stored in the VMM library on
+    the library server named LibServer01. This example assumes that only one virtual machine named VM01 is currently stored on LibServer01.
+
+    The second command gets the host object named VMHost01, and then stores that object in the $VMHost variable.
+
+    The last command moves the virtual machine from its current location in the library to the location D:\VirtualMachinePath on the host stored in $VMHost. The command automatically uses
+    the fastest available transfer type. When the command finishes, it returns information about the moved virtual machine.
+    Example 2: Move a virtual machine from the library to a host asynchronously
+
+    PS C:\>$VM = Get-SCVirtualMachine | Where-Object { $_.Name -Eq "VM01" -And $_.LibraryServer -Eq "LibServer01.Contoso.com" }
+    PS C:\> $VMHost = Get-SCVMHost -ComputerName "VMHost02.Contoso.com"
+    PS C:\> Move-SCVirtualMachine -VMHost $VMHost -VM $VM -Path "D:\VirtualMachinePath" -RunAsynchronously -JobVariable "MoveVMJob"
+    PS C:\> $MoveVMJob
+
+    The first two commands in this example are identical to the commands in the first example, except for the name of the virtual machine host.
+
+    The third command moves the virtual machine from its current location to D:\VirtualMachinePath on VMHost02. The command specifies the RunAsynchronously parameter to return control to
+    the command shell immediately. The command specifies the JobVariable parameter to track the progress of the job. The command stores a record of the job progress in the $MoveVMJob
+    variable. For the JobVariable parameter, you do not specify the dollar sign ($) to create the variable.
+
+    The last command displays the contents of $MoveVMJob, which includes a description of the move job, its status, its progress, and other information.
+    Example 3: Move a virtual machine from the library to a host by forcing a LAN transfer
+
+    PS C:\>$VM = Get-SCVirtualMachine | Where-Object { $_.Name -Eq "VM03" -And $_.LibraryServer -Eq "LibServer01.Contoso.com" }
+    PS C:\> $VMHost = Get-SCVMHost -ComputerName "VMHost03.Contoso.com"
+    PS C:\> Move-SCVirtualMachine -VMHost $VMHost -VM $VM -Path "D:\VirtualMachinePath" -UseLAN
+
+    The first command gets the virtual machine object named VM03 on library server LibServer01, and then stores that object in the $VM variable.
+
+    The second command gets the host object named VMHost03, and then stores that object in the $VMHost variable.
+
+    The last command moves the virtual machine VM03 from its current location in the library to D:\VirtualMachinePath on VMHost03. The command specifies the UseLAN parameter to specify
+    that the transfer use a network transfer, even if faster transfer mechanisms are available.
+    Example 4: Move a virtual machine between hosts by using VMware VMotion
+
+    PS C:\>$VM = Get-SCVirtualMachine -Name "VM04" | Where-Object {$_.VMHost.Name -Eq "ESXHost01"}
+    PS C:\> $VMHost = Get-SCVMHost | Where-Object {$_.Name -Eq "ESXHost02"}
+    PS C:\> Move-SCVirtualMachine -VM $VM -VMHost $VMHost -Path "[Storage2]"
+
+    The first command gets the virtual machine object named VM04 on ESXHost01, and then stores that object in the $VM variable.
+
+    The second command gets the ESX host object named ESXHost02, and then stores that object in the $VMHost variable.
+
+    The final command uses VMware VMotion to move the virtual machine from its current ESX host to the other ESX host.
+
+    NOTE: The Move-SCVirtualMachine cmdlet can use the VMware VMotion feature to move a virtual machine from one ESX host to another only if both ESX servers are in the same Datacenter
+    container on the vCenter Server.
+    Example 5: Move a highly available virtual machine between nodes in a host cluster by using Hyper-V live migration
+
+    PS C:\>$VM = Get-SCVirtualMachine -Name "HAVM05" | Where-Object {$_.VMHost.Name -Eq "VMHVHostNode05A.Contoso.com"}
+    PS C:\> $VMHost = Get-SCVMHost | Where-Object {$_.Name -Eq "VMHVHostNode05B.Contoso.com"}
+    PS C:\> Move-SCVirtualMachine -VM $VM -VMHost $VMHost -Path "D:\VMs\"
+
+    The first command gets the virtual machine object named HAVM05 on VMHVHostNode05A, and then stores that object in the $VM variable. In this example, HAVM05 is a highly available
+    virtual machine. VMHVHostNode05A and VMHVHostNode05B are nodes in a Hyper-V host cluster.
+
+    The second command gets the host object named VMHVHostNode05B, and then stores that object in the $VMHost variable.
+
+    The final command uses live migration to move the virtual machine from VMHVHostNode05A to VMHVHostNode05B.
+    Example 6: Move a running virtual machine on a Hyper-V host to a new location on the same host
+
+    PS C:\>$MoveVhdPath = "E:\VHDs"
+    PS C:\> $VM = Get-SCVirtualMachine "VM06"
+    PS C:\> $VMHost = Get-SCVMHost "VMHost06"
+    PS C:\> $HostPath = "E:\VirtualMachinePath"
+    PS C:\> $JobGroupID = [System.Guid]::NewGuid().ToString()
+    PS C:\> Move-SCVirtualHardDisk -IDE -Bus 1 -Lun 1 -Path $MoveVhdPath -JobGroup $JobGroupID
+    PS C:\> Move-SCVirtualMachine -VM $VM -VMHost $VMHost -Path $HostPath -JobGroup $JobGroupID
+
+    The first command stores the string E:\VHDs in $MoveVhdPath. This is the path of which to move the virtual hard disk of the virtual machine.
+
+    The second command gets the virtual machine object named VM06, and then stores that object the $VM variable.
+
+    The third command gets the host object named VMHost06, and then stores that object in the $VMHost variable. In this example, VMHost06 is a Hyper-V host.
+
+    The fourth command stores the string E:\VirtualMachinePath in the $HostPath variable. This is the path of which to move VM06.
+
+    The fifth command creates a new GUID string and stores it in the $JobGroupID variable. This GUID is a job group ID that functions as an identifier that groups subsequent commands that
+    include this identifier into a single job group.
+
+    The sixth command sets the virtual hard disk path of the value stored in $MoveVhdPath and it connects the virtual hard disk to Bus 1 and LUN 1 on the virtual IDE controller on the
+    virtual machine. This command specifies the JobGroup parameter so that it does not actually run until Move-SCVirtualMachine triggers the running of any commands in the job group list.
+
+    The last command moves VM06 to E:\VirtualMachinePath on the same host. The cmdlet runs Move-SCVirtualHardDisk as part of $JobGroupID. The command moves the virtual hard disk of the
+    virtual machine to E:\VHDs.
+
