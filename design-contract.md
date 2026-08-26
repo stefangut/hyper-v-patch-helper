@@ -25,18 +25,20 @@ The script assumes an existing SCVMM connection. It does not call `Get-SCVMMServ
 6. Inspect node availability state.
 7. If any cluster node is paused, unavailable, or in maintenance mode, report the anomaly and exit without starting moves.
 8. Query VMs deployed on the source host with `Get-SCVirtualMachine -VMHost`.
+9. Resolve the Hyper-V live-migration maximum for the source host and each eligible destination host.
+10. Set the global migration concurrency limit to the smallest resolved value across the source host and eligible destination hosts. If a value cannot be resolved or is invalid, prompt the operator for a replacement global limit before execution.
 
-Capacity, compatibility, and migration-viability checks are deliberately outside this contract.
+Capacity, compatibility, and other migration-viability checks are deliberately outside this contract. Live-migration maximums are used only for throttling.
 
 ## VM classification
 
 - Action candidates are running VMs only.
-- A VM is a Zerto VRA when its SCVMM name matches the case-sensitive regular expression `^ZVRA`.
+- A VM is a Zerto VRA when its SCVMM name matches the case-sensitive regular expression `^Z-VRA`.
 - Zerto VRA VMs are reported as leave-in-place and are never passed to `Move-SCVirtualMachine`.
 - Non-running VMs are reported separately in pre-flight and are not processed.
 - Unexpected or incomplete SCVMM object data is reported as an anomaly rather than silently ignored.
 
-PowerShell's default `-match` operator is case-insensitive; implementation must use a case-sensitive comparison such as `-cmatch '^ZVRA'`.
+PowerShell's default `-match` operator is case-insensitive; implementation must use a case-sensitive comparison such as `-cmatch '^Z-VRA'`.
 
 ## Destination assignment
 
@@ -51,6 +53,19 @@ VM N -> destination ((N - 1) modulo destination count) + 1
 
 The first iteration does not rebalance based on capacity or existing workload.
 
+## Migration queue and throttling
+
+- The first iteration processes one source host per script invocation, so one global migration queue and one global active-job count are sufficient.
+- The queue contains the planned action candidates in their existing destination-assignment order.
+- The script must never have more active SCVMM migration jobs than the effective global concurrency limit.
+- The effective limit is the minimum of the source host's and eligible destination hosts' Hyper-V maximum live-migration settings.
+- When the configured maximum cannot be queried or is invalid, prompt the operator for a positive integer limit. Do not silently use a default.
+- Each asynchronous `Move-SCVirtualMachine` result must be tracked as an SCVMM job.
+- While queued candidates remain, query tracked SCVMM job state and release a slot when a job reaches a terminal state, including success or failure. A released slot may be used for the next queued candidate.
+- A trigger exception is reported as an anomaly and immediately releases its slot so independent queued candidates can continue.
+- The script exits after the queue length reaches zero; it does not wait for already-started asynchronous jobs to complete after all candidates have been submitted.
+- The queue is a scheduling mechanism only. It does not create destination-specific queues or change the round-robin destination assignments.
+
 ## Pre-flight contract
 
 Pre-flight is read-only. It must display:
@@ -58,8 +73,8 @@ Pre-flight is read-only. It must display:
 - Source host.
 - Cluster name.
 - Eligible destinations.
-- `MIGRATE`: running non-ZVRA VMs and assigned destinations.
-- `LEAVE - ZERTO`: running VMs matching `^ZVRA`.
+- `MIGRATE`: running non-Z-VRA VMs and assigned destinations.
+- `LEAVE - ZERTO`: running VMs matching `^Z-VRA`.
 - `LEAVE - NOT RUNNING`: VMs that are not running.
 - Anomalies and blocking conditions.
 
@@ -69,25 +84,26 @@ Pre-flight must not invoke `Move-SCVirtualMachine`.
 
 1. Perform the same discovery and classification used by pre-flight.
 2. Print the planned migration set, including source and destination hosts.
-3. Request one confirmation for the complete set through `ShouldProcess`.
-4. For each action candidate, invoke native SCVMM migration asynchronously:
+3. Resolve the effective global migration concurrency limit before starting migration. If prompting is required, obtain the operator's replacement limit.
+4. Request one confirmation for the complete set through `ShouldProcess`.
+5. Fill and service the global queue without exceeding the effective concurrency limit. For each action candidate released from the queue, invoke native SCVMM migration asynchronously:
 
 ```powershell
 Move-SCVirtualMachine -VM $VM -VMHost $DestinationHost -RunAsynchronously
 ```
 
-5. Report every migration trigger attempted and its result.
-6. Continue after an individual trigger exception and report the exception as an anomaly.
-7. Do not wait for asynchronous SCVMM jobs to complete.
+6. Track the returned SCVMM job and report every migration trigger attempted and its job identity or result.
+7. Continue after an individual trigger exception and report the exception as an anomaly.
+8. While candidates remain queued, poll tracked SCVMM jobs to determine when slots become available. Do not wait for already-started jobs after the queue is empty.
 
-The script should return a failure indication when trigger errors or blocking anomalies occur, while preserving fail-forward processing for independent VMs.
+The script should return a failure indication when trigger errors, invalid operator input, or blocking anomalies occur, while preserving fail-forward processing for independent VMs.
 
 ## Explicit non-goals
 
 - Migrating or stopping Zerto VRA VMs.
 - Direct Hyper-V, Failover Clustering, or Zerto Manager control.
 - Capacity or live-migration viability testing.
-- Waiting for or polling asynchronous migration jobs.
+- Waiting for asynchronous migration jobs after the submission queue is empty.
 - Automatically tolerating paused, unavailable, or maintenance-mode nodes.
 - Establishing SCVMM connections.
 
@@ -96,7 +112,6 @@ The script should return a failure indication when trigger errors or blocking an
 Future versions may:
 
 - Allow a configured number of paused or maintenance nodes.
-- Add SCVMM job tracking and completion reporting.
 - Add configurable destination ordering or balancing.
 - Add capacity and compatibility validation.
 - Add structured logging or an exportable report.
